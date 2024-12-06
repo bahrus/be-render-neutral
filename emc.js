@@ -22,5 +22,3 @@ export const emc = {
     enhancedElementInstanceOf: [HTMLScriptElement],
 };
 
-const mose = seed(emc);
-MountObserver.synthesize(document, BeHive, mose);
