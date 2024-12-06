@@ -4,7 +4,16 @@
   "description": "Provide base abstract class for different rendering libraries",
   "main": "be-render-neutral.js",
   "scripts": {
-    "test": "playwright test"
+    "serve": "python3 ./node_modules/ssi-server/ssi_server.py",
+    "test": "playwright test",
+    "safari": "npx playwright wk http://localhost:3030",
+    "update": "ncu -u && npm install"
+  },
+  "dependencies": {
+    "be-enhanced": "0.0.156",
+    "be-hive": "0.0.236",
+    "mount-observer": "0.0.39",
+    "trans-render": "0.0.864"
   },
   "repository": {
     "type": "git",

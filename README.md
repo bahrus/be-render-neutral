@@ -5,3 +5,4 @@ Provide base abstract class for different rendering libraries, including [be-ali
 Each of the libraries linked to above adds the ability to enhance the script element, so that the content inside the script element gets rendered inside the parent element containing the script element.
 
 This package provides the common logic that all those enhancements share.
+
