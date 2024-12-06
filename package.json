@@ -1,6 +1,6 @@
 {
   "name": "be-render-neutral",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Provide base abstract class for different rendering libraries",
   "main": "be-render-neutral.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "test": "playwright test",
     "safari": "npx playwright wk http://localhost:3030",
     "update": "ncu -u && npm install"
-  },  
+  },
   "files": [
     "*.js",
     "./ts-refs/*"
