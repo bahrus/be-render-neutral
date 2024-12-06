@@ -11,7 +11,7 @@ import {dispatchEvent as de} from 'trans-render/positractions/dispatchEvent.js';
  * @implements {Actions}
  * 
  */
-class BeAlit extends BE {
+class BeRenderNeutral extends BE {
     de = de;
 
     /**
@@ -112,6 +112,3 @@ class BeAlit extends BE {
     }
     
 }
-
-await BeAlit.bootUp();
-export {BeAlit}
