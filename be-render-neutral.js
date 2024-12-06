@@ -4,7 +4,7 @@ import { propInfo, resolved, rejected } from 'be-enhanced/cc.js';
 import {dispatchEvent as de} from 'trans-render/positractions/dispatchEvent.js';
 
 /** @import {BEConfig, IEnhancement, BEAllProps} from './ts-refs/be-enhanced/types.d.ts' */
-/** @import {Actions, PAP,  AP, BAP} from './ts-refs/be-alit/types' */;
+/** @import {Actions, PAP,  AP, BAP} from './ts-refs/be-render-neutral/types' */;
 /** @import {Specifier} from './ts-refs/trans-render/dss/types.d.ts' */
 
 /**
@@ -57,14 +57,12 @@ class BeAlit extends BE {
     }
 
     /**
-     * 
+     * This is an "abstract" method
+     * that needs implementing in each library that extends this class
      * @param {BAP} self 
      */
     doRender(self) {
-        const {renderer, vm, enhancedElement} = self;
-        const {parentElement} = enhancedElement;
-        if(parentElement === null) throw 400;
-        render(renderer(vm, html), parentElement);
+        throw 'NI';
     }
 
     /**
