@@ -1,0 +1,19 @@
+{
+  "name": "be-render-neutral",
+  "version": "0.0.0",
+  "description": "Provide base abstract class for different rendering libraries",
+  "main": "be-render-neutral.js",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahrus/be-render-neutral.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bahrus/be-render-neutral/issues"
+  },
+  "homepage": "https://github.com/bahrus/be-render-neutral#readme"
+}
