@@ -8,6 +8,16 @@
     "test": "playwright test",
     "safari": "npx playwright wk http://localhost:3030",
     "update": "ncu -u && npm install"
+  },  
+  "files": [
+    "*.js",
+    "./ts-refs/*"
+  ],
+  "types": "./ts-refs/be-alit/types.d.ts",
+  "exports": {
+    ".": "./be-render-neutral.js",
+    "./emc.js": "./emc.js",
+    "./be-render-neutral.js": "./be-render-neutral.js"
   },
   "dependencies": {
     "be-enhanced": "0.0.156",
