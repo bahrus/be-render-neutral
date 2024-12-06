@@ -112,3 +112,5 @@ class BeRenderNeutral extends BE {
     }
     
 }
+
+export {BeRenderNeutral}
