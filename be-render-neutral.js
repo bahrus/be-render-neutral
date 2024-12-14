@@ -50,8 +50,14 @@ class BeRenderNeutral extends BE {
      */
     getRenderer(self){
         const {enhancedElement} = self;
+        const inner = enhancedElement.innerHTML;
+        const guid = `a_${crypto.randomUUID()}`;
+        const scriptString = `document.currentScript['${guid}'] = (vm, html ) => ${inner}`;
+        const script = document.createElement('script');
+        script.innerHTML = scriptString;
+        document.head.appendChild(script);
         return /** @type {BAP} */({
-            renderer: enhancedElement.renderer,
+            renderer: script[guid],
             resolved: true,
         });
     }
