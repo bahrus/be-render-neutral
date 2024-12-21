@@ -1,6 +1,6 @@
 {
   "name": "be-render-neutral",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Provide base abstract class for different rendering libraries",
   "main": "be-render-neutral.js",
   "scripts": {
