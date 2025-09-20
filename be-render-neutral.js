@@ -4,7 +4,7 @@ import { propInfo, resolved, rejected } from 'be-enhanced/cc.js';
 import {dispatchEvent as de} from 'trans-render/positractions/dispatchEvent.js';
 
 /** @import {BEConfig, IEnhancement, BEAllProps} from './ts-refs/be-enhanced/types.d.ts' */
-/** @import {Actions, PAP,  AP, BAP} from './ts-refs/be-render-neutral/types' */;
+/** @import {Actions, PAP,  AP, BAP, Renderer} from './ts-refs/be-render-neutral/types' */;
 /** @import {Specifier} from './ts-refs/trans-render/dss/types.d.ts' */
 
 /**
@@ -57,7 +57,7 @@ class BeRenderNeutral extends BE {
         script.innerHTML = scriptString;
         document.head.appendChild(script);
         return /** @type {BAP} */({
-            renderer: script[guid],
+            renderer: /** @type {Renderer} */ (/** @type {any} */ (script)[guid]),
             resolved: true,
         });
     }
@@ -87,7 +87,7 @@ class BeRenderNeutral extends BE {
         const { host } = specifier;
         let propToAbsorb = undefined;
         /** @type {string | undefined} */
-        let evt = specifier.evt || 'input';
+        let evt = specifier.evtName || 'input';
         const prop = specifier.prop || 'value';
         if (host) {
             if (prop === undefined)
@@ -97,7 +97,7 @@ class BeRenderNeutral extends BE {
         }
         const absorbingObject = await ASMR.getAO(remoteEl, {
             evt,
-            selfIsVal: specifier.path === '$0',
+            selfIsVal: specifier.prop === '$0',
             propToAbsorb
         });
         return /** @type {BAP} */({
