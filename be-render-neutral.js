@@ -26,8 +26,8 @@ class BeRenderNeutral extends BE {
             with: {},
         },
         compacts:{
-            when_with_changes_invoke_observe: 0,
-            when_absorbingObject_changes_invoke_absorb: 0,
+            when_with_changes_call_observe: 0,
+            when_absorbingObject_changes_call_absorb: 0,
         },
         actions: {
             getRenderer: {
