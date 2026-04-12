@@ -4,26 +4,31 @@
   "description": "Provide base abstract class for different rendering libraries",
   "main": "be-render-neutral.js",
   "scripts": {
-    "serve": "python3 ./node_modules/ssi-server/ssi_server.py",
+    "build": "node emc.mjs > emc.json",
+    "serve": "node ./node_modules/spa-ssi/serve.js",
     "test": "playwright test",
-    "safari": "npx playwright wk http://localhost:3030",
+    "safari": "npx playwright wk http://localhost:8000",
     "update": "ncu -u && npm install"
   },
   "files": [
     "*.js",
     "./ts-refs/*"
   ],
-  "types": "./ts-refs/be-alit/types.d.ts",
+  "types": "./types/be-render-neutral/types.d.ts",
   "exports": {
     ".": "./be-render-neutral.js",
     "./emc.js": "./emc.js",
     "./be-render-neutral.js": "./be-render-neutral.js"
   },
   "dependencies": {
-    "be-enhanced": "0.0.188",
-    "be-hive": "0.0.266",
-    "mount-observer": "0.0.102",
+    "be-hive": "0.1.9",
+    "mount-observer": "0.0.16",
+    "roundabout-lib": "0.0.2",
     "trans-render": "0.0.958"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.59.1",
+    "spa-ssi": "0.0.27"
   },
   "repository": {
     "type": "git",

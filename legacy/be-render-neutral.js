@@ -1,52 +1,51 @@
 // @ts-check
-/** @import {Actions, PAP, AllProps, AP} from './types/be-render-neutral/types' */;
-/** @import {RoundaboutOptions} from './types/roundabout/types' */;
-/** @import {ElementEnhancementGateway} from './types/assign-gingerly/types' */;
-/** @import {EMC} from './types/mount-observer/types' */;
-/** @import {RAConfig} from './types/roundabout/types' */;
-/**
- * @type {EMC<any, AllProps, Element, RAConfig<AllProps, Actions>>}
- */
-import emc from './emc.json' with {type: 'json'};
+import { BE } from 'be-enhanced/BE.js';
+import { propInfo, resolved, rejected } from 'be-enhanced/cc.js';
+import {dispatchEvent as de} from 'trans-render/positractions/dispatchEvent.js';
 
-const {customData} = emc;
+/** @import {BEConfig, IEnhancement, BEAllProps} from './ts-refs/be-enhanced/types.d.ts' */
+/** @import {Actions, PAP,  AP, BAP, Renderer} from './ts-refs/be-render-neutral/types' */;
+/** @import {Specifier} from './ts-refs/trans-render/dss/types.d.ts' */
 
 /**
  * @implements {Actions}
+ * 
  */
-class BeRenderNeutral {
+class BeRenderNeutral extends BE {
+    de = de;
 
     /**
-     * @param {Element & ElementEnhancementGateway} enhancedElement 
-     * @param {*} ctx 
-     * @param {PAP} initVals 
+     * @type {BEConfig<BAP, Actions & IEnhancement>}
      */
-    constructor(enhancedElement, ctx, initVals){
-        this.#init(enhancedElement, initVals);
-    }
-
-    /**
-     * @param {Element & ElementEnhancementGateway} enhancedElement 
-     * @param {PAP} initVals 
-     */
-    async #init(enhancedElement, initVals){
-        /**
-         * @type {RoundaboutOptions}
-         */
-        const raOptions = {
-            ...customData,
-            vm: this,
-            initialPropVals: {
-                enhancedElement,
-                ...initVals
+    static config = {
+        propInfo:{
+            ...propInfo,
+            vm: {},
+            renderer: {},
+            absorbingObject: {},
+            with: {},
+        },
+        compacts:{
+            when_with_changes_call_observe: 0,
+            when_absorbingObject_changes_call_absorb: 0,
+        },
+        actions: {
+            getRenderer: {
+                ifNoneOf: ['renderer']
+            },
+            doRender: {
+                ifAllOf: ['renderer', 'vm']
             }
-        };
-        (await import('roundabout-lib/roundabout.js')).roundabout(raOptions);
+        },
+        positractions: [resolved, rejected],
+        handlers: {
+            absorbingObject_to_absorb_on: '.'
+        }
     }
 
     /**
      * 
-     * @param {AP} self 
+     * @param {BAP} self 
      * @returns 
      */
     getRenderer(self){
@@ -57,8 +56,8 @@ class BeRenderNeutral {
         const script = document.createElement('script');
         script.innerHTML = scriptString;
         document.head.appendChild(script);
-        return /** @type {PAP} */({
-            renderer: /** @type {import('./types/be-render-neutral/types').Renderer} */ (/** @type {any} */ (script)[guid]),
+        return /** @type {BAP} */({
+            renderer: /** @type {Renderer} */ (/** @type {any} */ (script)[guid]),
             resolved: true,
         });
     }
@@ -66,7 +65,7 @@ class BeRenderNeutral {
     /**
      * This is an "abstract" method
      * that needs implementing in each library that extends this class
-     * @param {AP} self 
+     * @param {BAP} self 
      */
     doRender(self) {
         throw 'NI';
@@ -74,13 +73,13 @@ class BeRenderNeutral {
 
     /**
      * 
-     * @param {AP} self 
+     * @param {BAP} self 
      */
     async observe(self){
         const {with: w, enhancedElement} = self;
         const { find } = await import('trans-render/dss/find.js');
         const { ASMR } = await import('trans-render/asmr/asmr.js');
-        const specifier = /** @type {any} */ (w[0]);
+        const specifier = /** @type {Specifier} */ (w[0]);
         //code below copy and pasted from SingleValSwitchHandler
         //package it?
         const remoteEl = await find(enhancedElement, specifier);
@@ -101,19 +100,19 @@ class BeRenderNeutral {
             selfIsVal: specifier.prop === '$0',
             propToAbsorb
         });
-        return /** @type {PAP} */({
+        return /** @type {BAP} */({
             absorbingObject
         });
     }
 
     /**
      * 
-     * @param {AP} self 
+     * @param {BAP} self 
      */
     async absorb(self){
         const {absorbingObject} = self;
         const vm = await absorbingObject.getValue();
-        return /** @type {PAP} */({
+        return /** @type {BAP} */({
             vm,
         });
     }
