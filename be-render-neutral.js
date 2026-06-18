@@ -1,15 +1,10 @@
 // @ts-check
 /** @import {Actions, PAP, AllProps, AP} from './types/be-render-neutral/types' */;
 /** @import {RoundaboutOptions} from './types/roundabout/types' */;
-/** @import {ElementEnhancementGateway} from './types/assign-gingerly/types' */;
+/** @import {ElementEnhancementGateway, SpawnContext} from './types/assign-gingerly/types' */;
 /** @import {EMC} from './types/mount-observer/types' */;
 /** @import {RAConfig} from './types/roundabout/types' */;
-/**
- * @type {EMC<any, AllProps, Element, RAConfig<AllProps, Actions>>}
- */
-import emc from './emc.json' with {type: 'json'};
-
-const {customData} = emc;
+/** @import {Infer} from './types/inferencer/types' */;
 
 /**
  * @implements {Actions}
@@ -17,27 +12,32 @@ const {customData} = emc;
 class BeRenderNeutral {
 
     /**
+     * @this {AllProps & Actions}
      * @param {Element & ElementEnhancementGateway} enhancedElement 
-     * @param {*} ctx 
+     * @param {SpawnContext} ctx 
      * @param {PAP} initVals 
      */
     constructor(enhancedElement, ctx, initVals){
-        this.#init(enhancedElement, initVals);
+        this.init(this, enhancedElement, ctx, initVals);
     }
 
     /**
+     * @param {AllProps} self
      * @param {Element & ElementEnhancementGateway} enhancedElement 
+     * @param {SpawnContext} ctx 
      * @param {PAP} initVals 
      */
-    async #init(enhancedElement, initVals){
+    async init(self, enhancedElement, ctx, initVals){
+        const {customData} = /** @type {EMC<any, AllProps, Element, RAConfig<AllProps, Actions>>} */ (ctx.emc);
         /**
          * @type {RoundaboutOptions}
          */
         const raOptions = {
             ...customData,
-            vm: this,
+            vm: self,
             initialPropVals: {
                 enhancedElement,
+                ...customData?.defaultPropVals,
                 ...initVals
             }
         };
@@ -45,9 +45,8 @@ class BeRenderNeutral {
     }
 
     /**
-     * 
      * @param {AP} self 
-     * @returns 
+     * @returns {PAP}
      */
     getRenderer(self){
         const {enhancedElement} = self;
@@ -65,57 +64,59 @@ class BeRenderNeutral {
 
     /**
      * This is an "abstract" method
-     * that needs implementing in each library that extends this class
+     * that needs implementing in each library that extends this class.
      * @param {AP} self 
      */
     doRender(self) {
         throw 'NI';
     }
 
+    /** @type {AbortController | undefined} */
+    #ac;
+
     /**
-     * 
      * @param {AP} self 
+     * @returns {Promise<PAP>}
      */
     async observe(self){
         const {with: w, enhancedElement} = self;
-        const { find } = await import('trans-render/dss/find.js');
-        const { ASMR } = await import('trans-render/asmr/asmr.js');
-        const specifier = /** @type {any} */ (w[0]);
-        //code below copy and pasted from SingleValSwitchHandler
-        //package it?
-        const remoteEl = await find(enhancedElement, specifier);
-        if (!(remoteEl instanceof EventTarget)) throw 404;
-        const { host } = specifier;
-        let propToAbsorb = undefined;
-        /** @type {string | undefined} */
-        let evt = specifier.evtName || 'input';
-        const prop = specifier.prop || 'value';
-        if (host) {
-            if (prop === undefined)
-                throw 'NI';
-            propToAbsorb = prop;
-            evt = undefined;
-        }
-        const absorbingObject = await ASMR.getAO(remoteEl, {
-            evt,
-            selfIsVal: specifier.prop === '$0',
-            propToAbsorb
-        });
+        if (!w || w.length === 0) return {};
+
+        if (this.#ac) this.#ac.abort();
+        this.#ac = new AbortController();
+
+        const {upSearch} = await import('inferencer/upSearch.js');
+        const {Infer} = await import('inferencer/inferencer.js');
+        const specifier = w[0];
+
+        // Parse the specifier — could be an id like "#myEl" or a host prop
+        const id = specifier.startsWith('#') ? specifier.slice(1) : undefined;
+        const remoteEl = await upSearch(enhancedElement, id);
+        if (!(remoteEl instanceof Element)) throw 404;
+
+        const inferInstance = new Infer(remoteEl);
+        const propagator = await inferInstance.getPropagator();
+        const valProp = inferInstance.valueProperty;
+
+        // Listen for changes and trigger absorb
+        propagator.addEventListener(valProp, () => {
+            const vm = remoteEl[valProp];
+            /** @type {any} */ (self).vm = vm;
+        }, {signal: this.#ac.signal});
+
+        // Initial value
         return /** @type {PAP} */({
-            absorbingObject
+            vm: remoteEl[valProp],
         });
     }
 
     /**
-     * 
      * @param {AP} self 
+     * @returns {Promise<PAP>}
      */
     async absorb(self){
-        const {absorbingObject} = self;
-        const vm = await absorbingObject.getValue();
-        return /** @type {PAP} */({
-            vm,
-        });
+        // vm is already set by the observe listener
+        return /** @type {PAP} */({});
     }
     
 }
