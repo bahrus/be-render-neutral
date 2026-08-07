@@ -12,12 +12,14 @@
   },
   "files": [
     "*.js",
-    "./ts-refs/*"
+    "*.mjs",
+    "*.json",
+    "types/**/*"
   ],
   "types": "./types/be-render-neutral/types.d.ts",
   "exports": {
     ".": "./be-render-neutral.js",
-    "./emc.js": "./emc.js",
+    "./emc.js": "./emc.mjs",
     "./be-render-neutral.js": "./be-render-neutral.js"
   },
   "dependencies": {
